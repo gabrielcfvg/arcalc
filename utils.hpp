@@ -5,9 +5,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-
-// third-party
-#include <fmt/format.h>
+#include <sstream>
 
 
 enum class Color
@@ -60,26 +58,27 @@ struct Error
     [[nodiscard]]
     std::string to_string() const
     {
-        std::string error_type;
+        std::stringstream repr;
 
+        repr << '[';
         if (this->error)
         {
-            error_type = fmt::format("[{}{}{}]",
-                get_color(Color::FG_LIGHT_RED),
-                "ERROR",
-                get_color(Color::FG_DEFAULT)
-            );
+            repr << get_color(Color::FG_LIGHT_RED);
+            repr << "ERROR";
+            repr << get_color(Color::FG_DEFAULT);
         }
         else
         {
-            error_type = fmt::format("[{}{}{}]",
-                get_color(Color::FG_LIGHT_YELLOW),
-                "WARNING",
-                get_color(Color::FG_DEFAULT)
-            );
+            repr << get_color(Color::FG_LIGHT_YELLOW);
+            repr << "WARNING";
+            repr << get_color(Color::FG_DEFAULT);
         }
+        repr << ']';
 
-        return fmt::format("{}[{}]: {}", error_type, this->collum, this->message);
+        repr << '[' << this->collum << ']';
+        repr << ": " << this->message;
+
+        return repr.str();
     }
 };
 

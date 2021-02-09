@@ -69,10 +69,15 @@ Eval value(ParseData& pd);
 
 Eval parse(const std::vector<Token>& input, ErrorHandler& ec)
 {
-
-    auto data = ParseData{input, ec};
-
-    return term(data);
+    try
+    {
+        auto data = ParseData{input, ec};
+        return term(data);
+    }
+    catch (const ParserExcept&)
+    {
+        return Eval{0, 0, EvalType::INTEGER};
+    }
 }
 
 Eval term(ParseData& pd)
